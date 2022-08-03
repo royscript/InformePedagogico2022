@@ -876,9 +876,13 @@ function emailEnviado(){
 						}else if(nombreProfesorJefe.toUpperCase()=="KARINA ARACENA MARIN"){
 						  htmlEjemplo += `<img src="${'http://drive.google.com/uc?export=view&id=147qbgdLXKuYQ36MQZJp3v8wOOjCMbpwJ'}" style="height: 150px;">`;
 						}
+                  var titutloDocente = 'PROFESOR JEFE';
+                  if(cursoSeleccionado==='2NMA'){//Este cambio se hizo ya que el docente de lenguaje renuncio y el jefe de UTP asumió su cargo
+                     titutloDocente = 'JEFE UTP';
+                  }
                         htmlEjemplo += `<hr>
                                        ${nombreProfesorJefe.toUpperCase()}
-                                       <br>PROFESOR JEFE
+                                       <br>${titutloDocente}
                                     </div>
                                    
                            </div>
