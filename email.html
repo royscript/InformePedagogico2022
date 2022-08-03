@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <base target="_top">
+  <title>A Simple Responsive HTML Email</title>
+  <style>
+    body{
+		margin: 0;
+		padding: 0;
+		font: small/ 1.5 Arial,Helvetica,sans-serif;
+    min-width: 450px;
+	}
+    .contenedor{
+    min-width: 450px;
+		max-width:600px;
+		width:100%;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		border: 1px solid #cccccc;
+	}
+	.cabecera{
+		padding: 40px 30px 50px 30px;
+		background-color: rgba(90,49,114,1);
+	}
+	.logoInstituto{
+		width : 110px;
+	}
+	.contenedorLogo{
+		float:left;
+		margin-top: -4%!important;
+	}
+	.tituloSuperior{
+		font-size: 15px;
+		color: #ffffff;
+		font-family: sans-serif;
+		letter-spacing: 10px;
+		width: 100%;
+        text-align: center;
+	}
+	.tituloInferior{
+	    padding: 5px 0 0 0;
+        color: #ffffff!important;
+		font-size: 33px;
+		line-height: 38px;
+		font-weight: bold;
+		width: 100%;
+        text-align: center;
+	}
+	.cuerpo{
+		background-color: #ffffff;
+		padding: 30px 30px 30px 30px;
+		font-size: 24px;
+		line-height: 28px;
+	}
+	.colage{
+		background-color: #ffffff;
+		padding: 30px 30px 30px 30px;
+		border-bottom: 1px solid #f2eeed;
+	}
+	.pieDePagina{
+		background-color: rgba(90,49,114,1);
+		padding: 40px 30px 20px 30px;
+		font-family: sans-serif;
+		font-size: 14px;
+		color: #ffffff;
+		text-align: center;
+	}
+	.derechos{
+		width: 100%;
+	}
+	.facebook{
+	    cursor: pointer;
+		fill: white;
+		width: 50%;
+        display: inline;
+	}
+	.instagram{
+	    cursor: pointer;
+		margin-left: 10px;
+		fill : white;
+		width: 50%;
+        display: inline;
+	}
+	.redesSociales{
+		margin-top: 10px;
+		/*display: flex;*/
+		justify-content: center;
+	}
+	.textoJustificado{
+		text-align:justify;
+		font-weight: bold;
+	}
+    @media only screen and (max-width: 486px) {
+        .logoInstituto {
+			width: 70px!important;
+			margin-left: auto!important;
+			margin-right: auto!important;
+			display: flex!important;
+		}
+		.contenedorLogo {
+			margin-top: -5%!important;
+			width: 100%!important;
+		}
+		.cuerpo{
+			font-size: 20px;
+		}
+    }
+	
+	
+		.tabla{
+			font-size: 14px;
+		}
+	
+	@media only screen and (max-width: 415px){
+		.cuerpo{
+			font-size: 18px;
+		}
+	}
+ </style>
+ <style>
+                                 
+  .fila{
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  margin: 10px;
+  margin-top: 20px;
+  }
+  .alturaContenedores{
+  height: 30px;
+  padding-top: 5px;
+  padding-left: 10px;
+  }
+  
+  .contenedorTitulo{
+  background-color: #8064a2;
+  border-color: inherit;
+  color: #ffffff;
+  font-weight: bold;
+  text-align: left;
+  vertical-align: top;
+  margin-right: 15px;
+  border: #9f98a8 3px solid;
+  }
+  .respuesta{
+  background-color: #eeece1;
+  border-color: inherit;
+  text-align: left;
+  vertical-align: top;
+  border: #8064a2 3px solid;
+  }
+  .contenedorTituloUnidadIzquierdo{
+  background-color: #403152;
+  border-color: inherit;
+  color: #ffffff;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: top;
+  border: #9f98a8 3px solid;
+  margin-right: 15px;
+  }
+  .contenedorTituloUnidadDerecho{
+  background-color: #403152;
+  border-color: inherit;
+  color: #ffffff;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: top;
+  border: #9f98a8 3px solid;
+  }
+  .cuerpo{
+  background-color: #ffffff;
+  font-size: 20px;
+  }
+  .titulosMasGrandes{
+  width: 60%;
+  }
+  .respuestasPequenas{
+  width: 30%;
+  }
+  .titulosPequenos{
+  width: 30%;
+  }
+  .respuestasGrandes{
+  width: 60%;
+  }
+  .tituloInforme{
+  align-items: center;
+  text-align: center;
+  color: #403152;
+  height: 160px;
+  }
+  .fotoTitulo{
+     height: 180px;
+     
+     left: 10px;
+     position: absolute;
+     margin-top: 0px;
+     font-weight: bold !important;
+  }
+.textoLeyenda{
+width:100%;
+text-align: center;
+font-size: 10px;
+margin-top: -5px;
+}
+
+.separador{
+border-bottom: 1px solid #f2eeed;
+}
+
+
+@media only screen and (max-width: 586px){
+.tabla{
+font-size: 14px;
+}
+.textoLeyenda {
+width: 100%;
+text-align: center;
+font-size: 10px;
+margin-top: -6px;
+}
+}
+@media only screen and (max-width: 561px){
+.textoLeyenda {
+font-size: 10px;
+margin-top: -10px;
+}
+}
+@media only screen and (max-width: 537px){
+.textoLeyenda {
+font-size: 10px;
+margin-top: -10px;
+}
+}
+@media only screen and (max-width: 501px){
+  .textoLeyenda {
+    font-size: 12px !important;
+    margin-top: -13px!important;
+  }
+}
+
+
+.observacionGrande{
+display:flex;
+}
+.observacionChica{
+display: none;
+}
+@media only screen and (max-width: 537px){
+	.tabla {
+	font-size: 12px;
+	}
+	.observacionGrande{
+	display: none;
+	}
+	.observacionChica{
+	display:flex;
+	}
+	.textoLeyenda {
+	font-size: 12px;
+	margin-top: -10px;
+	}
+	.firmaDocente{
+	}
+	.firmaDirectora{
+	}
+}
+
+</style>
+</head>
+
+<body bgcolor="#f6f8f1">
+	<div class="contenedor">
+		<div class="cabecera">
+		    <div class="contenedorLogo">
+				<img class="logoInstituto" src="http://drive.google.com/uc?export=view&id=1VQkwcQb-uZBgVeZitkI-IoSGNDE0bs1L" alt="" />
+			</div>
+			<div class="espacio" style="width: 100%;height: 10px;"></div>
+			<div class="tituloSuperior">INFORME PEDAGÓGICO</div>
+			<div class="tituloInferior">PRIMER SEMESTRE 2020</div>
+		</div>
+		<div class="cuerpo">
+			<div class="textoJustificado"><?= getAlumnoActual().mensaje ?></div>
+			
+			
+			<div class="tabla">
+			
+			
+			
+			
+			
+			
+					<div id="dom-to-print">
+							 <div class="fila">
+							 <div class="contenedorTitulo alturaContenedores titulosPequenos">NOMBRE</div>
+							 <div class="respuesta alturaContenedores respuestasGrandes"><?= getAlumnoActual().tbody.nombreAlumno ?></div>
+							 </div>
+							 <div class="fila">
+							 <div class="contenedorTitulo alturaContenedores titulosPequenos">CURSO</div>
+							 <div class="respuesta alturaContenedores respuestasGrandes"><?= getAlumnoActual().tbody.curso ?></div>
+							 </div>
+							 <div class="fila">
+							 <div class="contenedorTituloUnidadIzquierdo alturaContenedores titulosMasGrandes">ASIGNATURA</div>
+							 <div class="contenedorTituloUnidadDerecho alturaContenedores respuestasPequenas">NIVEL DE LOGRO</div>
+							 </div>
+							 <div class="fila">
+							 <div class="contenedorTitulo alturaContenedores titulosMasGrandes">LENGUAJE</div>
+							 <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.lenguaje ?></div>
+							 </div>
+							 <div class="fila">
+							 <div class="contenedorTitulo alturaContenedores titulosMasGrandes">MATEMÁTICA</div>
+							 <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.matematica ?></div>
+							 </div>
+							 <div class="fila">
+							 <div class="contenedorTitulo alturaContenedores titulosMasGrandes">CIENCIAS NATURALES</div>
+							 <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.cienciasNaturales ?></div>
+							 </div>
+							 <div class="fila">
+							 <div class="contenedorTitulo alturaContenedores titulosMasGrandes">ESTUDIOS SOCIALES</div>
+							 <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.estudiosSociales ?></div>
+               </div>
+               
+               <? if(getAlumnoActual().tbody.curso!='3°A'){ ?>
+                <div class="fila">
+                    <div class="contenedorTitulo alturaContenedores titulosMasGrandes">INGLÉS</div>
+                    <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.ingles ?></div>
+                </div>
+              <? } ?>
+              
+              <? if(getAlumnoActual().tbody.curso=='3°A'){ ?>
+                <div class="fila">
+                    <div class="contenedorTitulo alturaContenedores titulosMasGrandes"><?= getAlumnoActual().tbody.taller1Titulo ?></div>
+                    <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.taller1Nota ?></div>
+                </div>
+            <? }else{ ?>
+                <div class="fila">
+                    <div class="contenedorTitulo alturaContenedores titulosMasGrandes"><?= getAlumnoActual().tbody.taller1Titulo ?></div>
+                    <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.taller1Nota ?></div>
+                </div>
+                <div class="fila">
+                    <div class="contenedorTitulo alturaContenedores titulosMasGrandes"><?= getAlumnoActual().tbody.taller2Titulo ?></div>
+                    <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.taller2Nota ?></div>
+                </div>
+            <? } ?>
+                   <!--- <div class="fila">
+											<div class="contenedorTituloUnidadIzquierdo alturaContenedores titulosMasGrandes">PROMEDIO GENERAL</div>
+											<div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.promedioGeneral ?></div>
+										</div>-->
+
+
+
+
+
+
+
+                    
+										 
+										 <!-- Se esconde desde 435px hacia ARRIBA -->
+										 <div class="fila observacionGrande">
+											<div class="contenedorTituloUnidadIzquierdo alturaContenedores titulosMasGrandes">OBSERVACIÓN</div>
+											<div class="contenedorTituloUnidadDerecho alturaContenedores respuestasPequenas" style="
+												  width: 25%;
+												  margin-left: 5%;
+												  font-size: 17px;
+											   ">CONCEPTO</div>
+										 </div>
+										 <div class="fila observacionGrande" style="height: 140px !important;">
+											<div class="respuesta alturaContenedores titulosMasGrandes" style="height: 140px !important;text-align: justify !important;margin-right: 15px;line-height: 15px;"><div style="padding-right: 10px;"><?= getAlumnoActual().tbody.observaciones ?></div></div>
+											<div class="respuesta alturaContenedores respuestasPequenas" style="
+												  height: 120px !important;
+												  background-color: #8064a2 !important;
+												  border: #9f98a8 3px solid !important;
+												  color: #f4f4f4;
+												  text-align: center;
+												  font-weight: bold;
+												  width: 25%;
+												  margin-left: 5%;
+												  font-size: 15px;
+											   ">
+											   <div class="textoLeyenda">(6,0-7,0) EXCELENTE</div><div class="textoLeyenda">(5,0-5,9) AVANZADO</div><div class="textoLeyenda">(4,0 – 4,9) MEDIO</div><div class="textoLeyenda">(2,0 -3,9) BAJO</div>
+											</div>
+										 </div>
+										 <!-------------------->
+										 <!-- Aparece desde 435px hacia abajo -->
+										 <div class="fila observacionChica">
+										   <div class="contenedorTituloUnidadIzquierdo alturaContenedores titulosMasGrandes" style="
+											  width: 100%;
+											  margin-right: 0px;
+											  ">OBSERVACIÓN</div>
+										</div>
+										<div class="fila observacionChica" style="height: 100px !important;margin-top: 25px;">
+										   <div class="respuesta alturaContenedores titulosMasGrandes" style="width: 100%;height: 110px !important;text-align: justify !important;line-height: 15px;"><div style="padding-right: 10px;"><?= getAlumnoActual().tbody.observaciones ?></div></div>
+										</div>
+										<div class="fila observacionChica" style="padding-top: 10px;">
+										   <div class="contenedorTituloUnidadDerecho alturaContenedores respuestasPequenas" style="
+											  width: 20%;
+											  font-size: 17px;
+											  width: 100%;
+											  ">CONCEPTO</div>
+										</div>
+										<div class="fila observacionChica" style="height: 105px !important;">
+										   <div class="respuesta alturaContenedores respuestasPequenas" style="
+											  height: 115px !important;
+											  background-color: #8064a2 !important;
+											  border: #9f98a8 3px solid !important;
+											  color: #f4f4f4;
+											  text-align: center;
+											  font-weight: bold;
+											  width: 20%;
+											  font-size: 20px;
+											  width: 100%;
+											  ">
+											  <div class="textoLeyenda" style="
+												 ">(6,0-7,0) EXCELENTE</div>
+											  <div class="textoLeyenda">(5,0-5,9) AVANZADO</div>
+											  <div class="textoLeyenda">(4,0 – 4,9) MEDIO</div>
+											  <div class="textoLeyenda">(2,0 -3,9) BAJO</div>
+										   </div>
+										</div>
+										 <!-------------------->
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 
+										 <div class="fila" style="margin-top: 100px !important; font-size: 15px;font-weight: bold;">
+											<div class="firmaDocente" style="text-align: center;left: 10%;margin-left: 6%;">
+											   <hr>
+											   <?= getAlumnoActual().tbody.profesorJefe ?>
+											   <br>PROFESOR JEFE
+											</div>
+											<div class="firmaDirectora" style="text-align: center;margin-left: 15%;">
+											   <hr>
+											   MERCEDES TERESA VELASQUEZ SEGUEL
+											   <br>DIRECTORA
+											</div>
+								   </div>
+								</div>
+			
+			</div>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		</div>
+		<div class="separador"></div>
+		<div class="colage"><img src="https://ci3.googleusercontent.com/proxy/Lu7Ebsz-MbCFJn-GJ4Ls0Gf14PmZw55xAjKfa-dJ0OoIzwr0hYvYLmqmmwGYZMIe4xwR5FhQO-KgHgXcOMpHD27lipvgOd1731JsmXgSer2Ztwd6K2sWM42qhl1SsQ=s0-d-e1-ft#http://drive.google.com/uc?export=view&amp;id=1AobHYfIGVskWwpMgAcyBKbIqkCa2xKRD" width="100%" border="0" alt="" class="CToWUd a6T" tabindex="0"></div>
+		<footer class="pieDePagina">
+			<div class="derechos">&reg; Instituto de Tierras Blancas</div>
+			<div class="redesSociales">
+				<div class="facebook">
+					<a href="https://www.facebook.com/InstitutoTierrasBlancas">
+                        <img src="http://drive.google.com/uc?export=view&id=1OH4D3hPJeO8nqJqCCVsyzjcjb4vb5FYD" width="37" height="37" alt="Facebook" border="0" />
+                      </a>
+				</div>
+				<div class="instagram">
+					<a href="https://www.instagram.com/institutotierrasblancas/">
+                        <img src="http://drive.google.com/uc?export=view&id=1iM7AKYyyk3Rtdm_ivqGSJXtbAHrN-qfx" width="37" height="37" alt="Twitter" border="0" />
+                      </a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

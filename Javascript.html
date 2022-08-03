@@ -1,0 +1,981 @@
+<script>
+  const contenedor = document.querySelector("#datos");
+  const cargandoRegistros = document.querySelector("#cargandoRegistros");
+  const curso = document.querySelector("#selectCurso");
+  let tabla = null;
+  let tablaDatos = null;
+  //-----------Tablas con datos-----
+  let notas = [];
+  let alumnosSeleccionados = [];
+  let nombreTalleres = [];
+  let usuarios = [];
+  let nombreProfesorJefe = null;
+  let cursoSeleccionado = null;
+  let observaciones = [];
+  function consultarCurso(){
+      try {
+         let procesando = '<button class="btn btn-primary" type="button" disabled>'
+                     +'<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'
+                     +' Cargando los registros ... '
+                     +'</button>';
+         cargandoRegistros.innerHTML = procesando;
+		 if(curso.value!='3NBA'){
+			 google.script.run.withFailureHandler(errorMostrarDatosExcel).withSuccessHandler(mostrarAlumnosCurso).eMedia(curso.value);
+		 }else{
+			 google.script.run.withFailureHandler(errorMostrarDatosExcel).withSuccessHandler(mostrarAlumnosCurso).eBasica();
+		 }
+         
+         let directorio = '';
+         if(curso.value==''){
+            directorio = '';
+         }
+
+         let buscarDatos = [];
+         buscarDatos.push({
+               nombreDato : 'id',
+               posicion : 0
+         });
+         buscarDatos.push({
+               nombreDato : 'rut',
+               posicion : 4
+         });
+         buscarDatos.push({
+               nombreDato : 'apellidoPaterno',
+               posicion : 5
+         });
+         buscarDatos.push({
+               nombreDato : 'apellidoMaterno',
+               posicion : 6
+         });
+		 buscarDatos.push({
+               nombreDato : 'nombres',
+               posicion : 7
+         });
+         buscarDatos.push({
+               nombreDato : 'observacion',
+               posicion : 8
+         });
+         //Limpiamos las observaciones
+         observaciones = {
+            curso : curso.value,
+            observaciones : []
+         };
+         switch(curso.value){
+            case '1NMA':
+               directorio = '1er nivel adulto (1° y 2° medio) A';
+               google.script.run
+                              .withFailureHandler(errorMostrarUsuariosDirectorio)
+                              .withSuccessHandler(buscarObservaciones)
+                              .obtenerDatos("1NMA",9,buscarDatos,[],null);
+               break;
+            case '1NMB':
+               directorio = '1er nivel adulto (1° y 2° medio) B';
+               google.script.run
+                              .withFailureHandler(errorMostrarUsuariosDirectorio)
+                              .withSuccessHandler(buscarObservaciones)
+                              .obtenerDatos("1NMB",9,buscarDatos,[],null);
+               break;
+            case '2NMA':
+               directorio = '2do nivel adulto (3° y 4° medio) A';
+               google.script.run
+                              .withFailureHandler(errorMostrarUsuariosDirectorio)
+                              .withSuccessHandler(buscarObservaciones)
+                              .obtenerDatos("2NMA",9,buscarDatos,[],null);
+               break;
+            case '2NMB':
+               directorio = '2do nivel adulto (3° y 4° medio) B';
+               google.script.run
+                              .withFailureHandler(errorMostrarUsuariosDirectorio)
+                              .withSuccessHandler(buscarObservaciones)
+                              .obtenerDatos("2NMB",9,buscarDatos,[],null);
+               break;
+            case '2NMC':
+               directorio = '2do nivel adulto (3° y 4° medio) C';
+               google.script.run
+                              .withFailureHandler(errorMostrarUsuariosDirectorio)
+                              .withSuccessHandler(buscarObservaciones)
+                              .obtenerDatos("2NMC",9,buscarDatos,[],null);
+               break;
+            case '3NBA':
+               directorio = '3er nivel basico adulto (7° y 8°) A';
+               google.script.run
+                              .withFailureHandler(errorMostrarUsuariosDirectorio)
+                              .withSuccessHandler(buscarObservaciones)
+                              .obtenerDatos("3NBA",9,buscarDatos,[],null);
+               break;
+         }
+         google.script.run.withFailureHandler(errorMostrarUsuariosDirectorio).withSuccessHandler(guardarUsuariosDeUnDirectorio).listarUsuariosDeUnDirectorio('/Estudiantes/'+directorio);
+         
+      } catch (error) {
+         console.error(error);
+         cargandoRegistros.innerHTML = error;
+      }
+  }
+  function errorMostrarDatosExcel(error){
+     //alert(error.message);
+     cargandoRegistros.innerHTML = "Error al cargar los datos Excel : "+error.message+". Reintente nuevamente.";
+  }
+  function errorMostrarUsuariosDirectorio(error){
+     //alert(error.message);
+     cargandoRegistros.innerHTML = "Error al recuperar los datos del directorio : "+error.message+". Reintente nuevamente.";
+  }
+  function guardarUsuariosDeUnDirectorio(datos){
+	  //console.log("Datos directorio");
+	  //console.log(datos);
+      usuarios = datos.map(registro=>{
+         return {
+            nombre : normalize(registro.name.givenName),
+            apellidos : normalize(registro.name.familyName),
+            email : registro.primaryEmail
+         }
+      });
+      //console.log(usuarios);
+  }
+
+  function buscarObservaciones(datos){
+      observaciones = {
+         curso : curso.value,
+         observaciones : datos
+      };
+	  //console.log("observaciones");
+      //console.log(observaciones);
+  }
+
+  function mostrarAlumnosCurso(datos){
+	 //console.log(datos);
+     cursoSeleccionado = curso.value;
+     nombreTalleres = [];
+     switch(curso.value){
+         case '1NMA':
+                  nombreTalleres.push({nombre : 'Convivencia Social'});
+                  nombreTalleres.push({nombre : 'Consumo y Calidad de Vida'});
+                  nombreProfesorJefe = 'ALEJANDRO OSORIO GUTIERREZ';
+                  break;
+         case '1NMB':
+                  nombreTalleres.push({nombre : 'Convivencia Social'});
+                  nombreTalleres.push({nombre : 'Consumo y Calidad de Vida'});
+                  nombreProfesorJefe = 'IVÁN PIZARRO ALCAYAGA';
+                  break;
+         case '2NMA':
+                  nombreTalleres.push({nombre : 'Inserción Laboral'});
+                  nombreTalleres.push({nombre : 'Tecnología de la Información'});
+                  nombreProfesorJefe = 'CARLOS SARRIA GUERRERO';
+                  break;
+         case '2NMB':
+                  nombreTalleres.push({nombre : 'Inserción Laboral'});
+                  nombreTalleres.push({nombre : 'Tecnología de la Información'});
+                  nombreProfesorJefe = 'CARLOS SARRIA GUERRERO';
+                  break;
+         case '2NMC':
+                  nombreTalleres.push({nombre : 'Inserción Laboral'});
+                  nombreTalleres.push({nombre : 'Tecnología de la Información'});
+                  nombreProfesorJefe = 'FELIPE DIAZ BONILLA';
+                  break;
+         case '3NBA':
+                  nombreTalleres.push({nombre : 'Oficio'});
+                  nombreProfesorJefe = 'DANNY OLIVARES BERRIOS';
+                  break;
+     }
+     cargandoRegistros.innerHTML = "Cantidad de registros "+datos.length;
+     notas = datos;
+     alumnosSeleccionados = [];
+     mostrarAlumnosSeleccionados();
+     listarAlumnosMedia();
+  }
+  function mostrarAlumnosSeleccionados(){
+     let html = '<b>Alumnos Seleccionados('+alumnosSeleccionados.length+') : </b>';
+     let bandera = false;
+     if(alumnosSeleccionados.length==0){
+       cargandoRegistros.innerHTML = html;
+       return true;
+     }
+     alumnosSeleccionados.forEach(element=>{
+         if(bandera == true){
+            html += ', ';
+         }
+         html += `${element.nombres}`;
+         bandera = true;
+     });
+     cargandoRegistros.innerHTML = html;
+  }
+  function seleccionarAlumno(checkbox,numeroAlumno){
+      if(checkbox ==true){
+         let elementoSeleccionado = notas.find(e=> numeroAlumno == e.numero);
+         alumnosSeleccionados.push(elementoSeleccionado);
+         //generarPdf(elementoSeleccionado);
+      }else{
+         let x = 0;
+         alumnosSeleccionados.forEach(element => {
+            if(numeroAlumno == element.numero){
+               alumnosSeleccionados.splice(x,1); 
+            }
+            x++;
+         });
+      }
+      mostrarAlumnosSeleccionados();
+  }
+  function listarAlumnosMedia(){
+      console.log("Notas");
+      console.log(notas);
+      var dataSet = [];
+      let bandera = false;
+      notas.forEach(element => {
+         //if(bandera==false){
+            //bandera = true;
+         //}else{
+             let estiloFila = '';
+            /*let estiloFila = '<span class="badge badge-pill badge-success">AL DÍA</span>';
+            if(colorearAlumnosPendientes(element)==true){
+               estiloFila = '<span class="badge badge-pill badge-danger">PENDIENTE</span>';
+            }*/
+            //dataSet.push(['',element.numero,element.nombres+' '+element.apellidoPaterno+' '+element.apellidoMaterno,estiloFila]);
+         //}
+		 dataSet.push(['',element.numero,element.nombres+' '+element.apellidoPaterno+' '+element.apellidoMaterno,'']);
+      });
+      if(tablaDatos!=null){
+         tablaDatos.destroy();
+      }
+      tablaDatos = $('.table').DataTable( {
+         data: dataSet,
+         columns: [
+            { title: "" },
+            { title: "numero" },
+            { title: "Nombre Completo" },
+            { title: "Estado" }
+         ],
+         /*-----Checkbox en columnas----*/
+         columnDefs: [{
+            orderable: false,
+            className: 'select-checkbox',
+            targets: 0
+         }],
+         select: {
+               //os es para seleccionar de a un checkbox
+            //style: 'os',
+            //multi es para seleccionar de muchos checkbox
+            style: 'multi',
+            selector: 'td:first-child'
+         },
+         order: [
+            [1, 'asc']
+         ]
+         /*-----------------------------*/
+      } );
+
+      tablaDatos.on("click", "th.select-checkbox", function() {
+         if ($("th.select-checkbox").hasClass("selected")) {
+            tablaDatos.rows().deselect();
+            $("th.select-checkbox").removeClass("selected");
+         } else {
+            tablaDatos.rows().select();
+            $("th.select-checkbox").addClass("selected");
+         }
+      }).on("select deselect", function() {
+         ("Some selection or deselection going on")
+         if (tablaDatos.rows({selected: true}).count() !== tablaDatos.rows().count()) {
+            $("th.select-checkbox").removeClass("selected");
+         } else {
+            $("th.select-checkbox").addClass("selected");
+         }
+         //--------Aca se obtienen las seldas seleccionadas -----//
+         alumnosSeleccionados.length = 0;//Eliminamos a los alumnos seleccionados
+         //Agregamos los alumnos seleccionados
+         let datos = tablaDatos.rows({selected: true, 'search': 'applied'}).data();
+         for(var x=0;x<datos.length;x++){
+            let numeroAlumno = datos[x][1];
+            let elementoSeleccionado = notas.find(e=> numeroAlumno == e.numero);
+            alumnosSeleccionados.push(elementoSeleccionado);
+         }
+         //Volvemos a cargar los alumnos seleccionados
+         //console.log("Mostrara alumnosSeleccionados");
+         //console.log(alumnosSeleccionados);
+         mostrarAlumnosSeleccionados();
+         //------------------------------------------------ -----//
+      });
+
+  }
+
+  function deseleccionarTodos(){
+     if(alumnosSeleccionados.length>0){
+        alumnosSeleccionados.forEach(element=>{
+            let checkbox = document.querySelector("#checkboxAlumno"+element.numero);
+            checkbox.checked = false;
+         });
+         alumnosSeleccionados.length = 0;
+     }
+     mostrarAlumnosSeleccionados();
+     //Recorremos la tabla del datatables para deseleccionar lso checkbox
+     /* tabla
+         .column( 0 )
+         .data()
+         .each( function ( value, index ) {
+            console.log( 'Data in index: '+index+' is: '+value );
+      });
+      
+
+
+      
+      $('.tabla tbody').on( 'click', 'td', function () {
+         alert( tabla.cell( this ).data() );
+      } );*/
+  }
+  
+  function seleccionarTodos(){
+      notas.forEach(element=>{
+         if(element.numero>0){
+            let checkbox = document.querySelector("#checkboxAlumno"+element.numero);
+            
+            checkbox.checked = true;
+         }
+         
+         
+      });
+      alumnosSeleccionados = notas;
+     mostrarAlumnosSeleccionados();
+  }
+  
+  let estiloCss = {
+      fila : `width: 100%;
+            display: flex;
+            align-items: flex-end;
+            margin: 10px;
+            margin-top: 20px;`,
+      alturaContenedores : `height: 30px;
+                           padding-top: 5px;
+                           padding-left: 10px;`,
+      contenedorTitulo : ` background-color: #8064a2;
+                           border-color: inherit;
+                           color: #ffffff;
+                           font-weight: bold;
+                           text-align: left;
+                           vertical-align: top;
+                           margin-right: 15px;
+                           border: #9f98a8 3px solid;`,
+      respuesta : ` background-color: #eeece1;
+                     border-color: inherit;
+                     text-align: left;
+                     vertical-align: top;
+                     border: #8064a2 3px solid;`,
+      contenedorTituloUnidadIzquierdo : ` background-color: #403152;
+                                          border-color: inherit;
+                                          color: #ffffff;
+                                          font-weight: bold;
+                                          text-align: center;
+                                          vertical-align: top;
+                                          border: #9f98a8 3px solid;
+                                          margin-right: 15px;`,
+      contenedorTituloUnidadDerecho : ` background-color: #403152;
+                                       border-color: inherit;
+                                       color: #ffffff;
+                                       font-weight: bold;
+                                       text-align: center;
+                                       vertical-align: top;
+                                       border: #9f98a8 3px solid;`,
+      cuerpo : ` background-color: #ffffff;
+                 font-size: 20px;`,
+      titulosMasGrandes : `width: 60%;`,
+      respuestasPequenas : `width: 15%;`,
+      titulosPequenos : `width: 30%;`,
+      respuestasGrandes : `width: 60%;`,
+      tituloInforme : `align-items: center;
+                        text-align: center;
+                        color: #403152;
+                        height: 160px;`,
+      fotoTitulo : `height: 180px;
+                     //margin-left: -450px;
+                     left: 10px;
+                     position: absolute;
+                     margin-top: 0px;
+                     font-weight: bold !important;`
+  }
+  let estilo = `<style>
+                                 
+                                 .fila{
+                                 width: 100%;
+                                 display: flex;
+                                 align-items: flex-end;
+                                 margin: 10px;
+                                 margin-top: 20px;
+                                 }
+                                 .alturaContenedores{
+                                 height: 30px;
+                                 padding-top: 5px;
+                                 padding-left: 10px;
+                                 }
+                                 
+                                 .contenedorTitulo{
+                                 background-color: #8064a2;
+                                 border-color: inherit;
+                                 color: #ffffff;
+                                 font-weight: bold;
+                                 text-align: left;
+                                 vertical-align: top;
+                                 margin-right: 15px;
+                                 border: #9f98a8 3px solid;
+                                 }
+                                 .respuesta{
+                                 background-color: #eeece1;
+                                 border-color: inherit;
+                                 text-align: center;
+                                 vertical-align: top;
+                                 border: #8064a2 3px solid;
+                                 }
+                                 .contenedorTituloUnidadIzquierdo{
+                                 background-color: #403152;
+                                 border-color: inherit;
+                                 color: #ffffff;
+                                 font-weight: bold;
+                                 text-align: center;
+                                 vertical-align: top;
+                                 border: #9f98a8 3px solid;
+                                 margin-right: 15px;
+                                 }
+                                 .contenedorTituloUnidadDerecho{
+                                 background-color: #403152;
+                                 border-color: inherit;
+                                 color: #ffffff;
+                                 font-weight: bold;
+                                 text-align: center;
+                                 vertical-align: top;
+                                 border: #9f98a8 3px solid;
+                                 }
+                                 .cuerpo{
+                                 background-color: #ffffff;
+                                 font-size: 20px;
+                                 }
+                                 .titulosMasGrandes{
+                                 width: 60%;
+                                 }
+                                 .respuestasPequenas{
+                                 width: 15%;
+                                 }
+                                 .titulosPequenos{
+                                 width: 30%;
+                                 }
+                                 .respuestasGrandes{
+                                 width: 60%;
+                                 }
+                                 .tituloInforme{
+                                 align-items: center;
+                                 text-align: center;
+                                 color: #403152;
+                                 height: 160px;
+                                 }
+                                 .fotoTitulo{
+                                    height: 180px;
+                                    //margin-left: -450px;
+                                    left: 10px;
+                                    position: absolute;
+                                    margin-top: 0px;
+                                    font-weight: bold !important;
+                                 }
+                              </style>`;
+  let estiloImpresion = `
+                        <style>
+                           @media print {
+                                    page-size: 215.9mm 330mm;
+                                    .page-break{
+                                       page-break-after:always
+                                    }
+                                 }
+                        </style>
+  `;
+  let estiloEmail = `
+  <style>
+      .cuerpo {
+               zoom: 70% !important;
+            }
+   </style>
+  `;
+  function generarInformes(){
+   var dialog = bootbox.dialog({
+      title: 'Generando Informes',
+      message: "Seleccione la opción<br><div id='contenedorPopup'></div>",
+      size: 'large',
+      buttons: {
+         cancel: {
+               label: "CERRAR",
+               className: 'btn-danger',
+               callback: function(){
+                  /*var pdf = new jsPDF('p','pt','a4');
+                  pdf.addHTML(document.querySelector(".cuerpo"),function() {
+                     pdf.save('web.pdf');
+                  });*/
+                  return true;
+               }
+         },
+         ok: {
+               label: "VER EN OTRA VENTANA",
+               className: 'btn-warning',
+               callback: function(){
+                  var x = window.open('');
+                  var htmlInforme = '';
+				  //console.log("alumnosSeleccionados");
+				  //console.log(alumnosSeleccionados);
+                  alumnosSeleccionados.forEach(alumno=>{
+                     htmlInforme += generarTablaHtmlInformePersona(alumno)+'<br class="page-break">';
+                  });
+                  x.document.body.innerHTML = estilo+estiloImpresion+htmlInforme;
+               }
+         },
+         noclose: {
+               label: "ENVIAR E-MAIL",
+               className: 'btn-info',
+               callback: function(){
+                  let contenedorPopup = document.querySelector("#contenedorPopup");
+                  let htmlEmails = '<form>';
+                  alumnosSeleccionados.forEach(registro=>{
+                     let sql = "SELECT * FROM ? WHERE nombre LIKE '%"+normalize(registro.nombres)+"%' AND apellidos LIKE '%"+normalize(registro.apellidoPaterno)+"%' AND apellidos LIKE '%"+normalize(registro.apellidoMaterno)+"%'";
+                     let resultSetEmails = alasql(sql,[usuarios]);
+                     if(resultSetEmails.length==1){
+                        //Se encontro el posible e-mail
+                        htmlEmails += `<div class="form-group">
+                                          <label for="alumnoEmail${registro.numero}">${resultSetEmails[0].nombre} ${resultSetEmails[0].apellidos}</label>
+                                          
+                                          <input type="text" class="form-control" id="alumnoEmail${registro.numero}" placeholder="${resultSetEmails[0].email}" value="${resultSetEmails[0].email}">
+                                          
+                                       </div>`;
+                     }else{
+                        /*----Si no lo encuentra porque le falta el apellido materno----*/
+                        sql = "SELECT * FROM ? WHERE nombre LIKE '%"+normalize(registro.nombres)+"%' AND apellidos LIKE '%"+normalize(registro.apellidoPaterno)+"%'";
+                        resultSetEmails = alasql(sql,[usuarios]);
+                        let opcionesDeCorreos = '';
+                        if(resultSetEmails.length>0){
+                           resultSetEmails.forEach(reg=>{
+                              opcionesDeCorreos += `${reg.email} `;
+                           });
+                        }else{
+                           let posibleCorreo = normalize(registro.nombres.split(' ')[0])+'.'+normalize(registro.apellidoPaterno.split(' ')[0]);
+                           sql = "SELECT * FROM ? WHERE email LIKE '%"+posibleCorreo+"%' ";
+                           resultSetEmails = alasql(sql,[usuarios]);
+                           if(resultSetEmails.length>0){
+                              resultSetEmails.forEach(reg=>{
+                                 opcionesDeCorreos += `${reg.email} `;
+                              });
+                           }else{
+                              posibleCorreo = normalize(registro.nombres.split(' ')[0])+'.'+normalize(registro.apellidoMaterno.split(' ')[0]);
+                              sql = "SELECT * FROM ? WHERE email LIKE '%"+posibleCorreo+"%' ";
+                              resultSetEmails = alasql(sql,[usuarios]);
+                              if(resultSetEmails.length>0){
+                                 resultSetEmails.forEach(reg=>{
+                                    opcionesDeCorreos += `${reg.email} `;
+                                 });
+                              }
+                           }
+                        }
+                        //No se encontro el posible email
+                        htmlEmails += `<div class="form-group">
+                                          <label for="alumnoEmail${registro.numero}">${normalize(registro.nombres)} ${registro.apellidoPaterno} ${registro.apellidoMaterno}</label>
+                                          
+                                          <input type="text" class="form-control is-invalid" id="alumnoEmail${registro.numero}" placeholder="E-mail no encontrado">
+                                          <div class="invalid-feedback">
+                                             Posibles correos : ${opcionesDeCorreos}
+                                          </div>
+                                       </div>`;
+                     }
+                  });
+                  contenedorPopup.innerHTML = htmlEmails+'<button type="button" class="btn btn-primary" onClick="enviarEmails()">Enviar e-mails</button></form>';
+                  return false;
+               }
+         }
+      }
+   });
+  }
+
+  function enviarEmails(){
+      let emailAlumno = null;
+      let correosEnviar = [];
+      alumnosSeleccionados.forEach(registro=>{
+         emailAlumno = document.querySelector("#alumnoEmail"+registro.numero).value;
+         if(emailAlumno==null || emailAlumno=='' || emailAlumno.length == 0){
+            alert("Le falta ingresar el e-mail de "+registro.nombres);
+            return false;
+         }else{
+            correosEnviar.push({
+               titulo: 'INFORME PEDAGÓGICO', 
+               email : emailAlumno,
+               mensaje : 'Estimado '+registro.nombres+', le adjuntamos su Informe Pedagógico. Como Directora estoy orgullosa de tu esfuerzo y superación.',
+               tbody : generarTablaHtmlInformePersona(registro,true),
+               estilo : estilo+estiloEmail
+            });
+         }
+      });
+      //console.log(correosEnviar);
+      enviandoEmails(correosEnviar);
+  }
+
+function enviandoEmails(emails){
+   google.script.run.withFailureHandler(errorEmail).withSuccessHandler(emailEnviado).enviarEmails(emails);
+}
+function errorEmail(error){
+   alert(error.message);
+}
+
+function emailEnviado(){
+   alert("Email`s enviados");
+}
+
+  var normalize = (function() {
+  var from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç", 
+      to   = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
+      mapping = {};
+ 
+  for(var i = 0, j = from.length; i < j; i++ )
+      mapping[ from.charAt( i ) ] = to.charAt( i );
+ 
+  return function( str ) {
+      var ret = [];
+      for( var i = 0, j = str.length; i < j; i++ ) {
+          var c = str.charAt( i );
+          if( mapping.hasOwnProperty( str.charAt( i ) ) )
+              ret.push( mapping[ c ] );
+          else
+              ret.push( c );
+      }      
+      return ret.join( '' );
+  }
+ 
+})();
+
+  function cualificarPromedio(promedio){
+     promedio = Math.ceil10(promedio,-1);
+     if(promedio>=1 && promedio<=3.9){
+         return 'BAJO';
+     }else if(promedio>=4 && promedio<=4.9){
+         return 'MEDIO';
+     }else if(promedio>=5 && promedio<=5.9){
+         return 'AVANZADO';
+     }else if(promedio>=6){
+         return 'EXCELENTE';
+     }else{
+        return 'SIN CONCEPTO';
+     }
+  }
+
+  (function() {
+  /**
+   * Ajuste decimal de un número.
+   *
+   * @param {String}  tipo  El tipo de ajuste.
+   * @param {Number}  valor El numero.
+   * @param {Integer} exp   El exponente (el logaritmo 10 del ajuste base).
+   * @returns {Number} El valor ajustado.
+   */
+  function decimalAdjust(type, value, exp) {
+    // Si el exp no está definido o es cero...
+    if (typeof exp === 'undefined' || +exp === 0) {
+      return Math[type](value);
+    }
+    value = +value;
+    exp = +exp;
+    // Si el valor no es un número o el exp no es un entero...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+      return NaN;
+    }
+    // Shift
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Shift back
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+  }
+
+  // Decimal round
+  if (!Math.round10) {
+    Math.round10 = function(value, exp) {
+      return decimalAdjust('round', value, exp);
+    };
+  }
+  // Decimal floor
+  if (!Math.floor10) {
+    Math.floor10 = function(value, exp) {
+      return decimalAdjust('floor', value, exp);
+    };
+  }
+  // Decimal ceil
+  if (!Math.ceil10) {
+    Math.ceil10 = function(value, exp) {
+      return decimalAdjust('ceil', value, exp);
+    };
+  }
+})();
+
+  
+  function generarTablaHtmlInformePersona(alumno, porCorreo = false){
+	 //console.log("Alumno generarTablaHtmlInformePersona");
+	 //console.log(alumno);
+     let promedioLenguaje = 0;
+     let promedioMatematicas = 0;
+     let promedioEstudiosSociales = 0;
+     let promedioCienciasNaturales = 0;
+     let promedioIngles = 0;
+     let promedioTaller1 = 0;
+     let promedioTaller2 = 0;
+     let promedioGeneral = 0;
+     let observacionesTxt = '';
+     
+     
+     /*---------------------------*/
+     
+     
+     let htmlEjemplo = '';
+     //console.log("mostrarObservacionAlumno");
+     
+      if(typeof observaciones.observaciones.registros != 'undefined'){
+         observaciones.observaciones.registros.forEach((dato,index)=>{
+            if(
+               normalize(dato.rut).split(" ")[0] == normalize(alumno.rut).split(" ")[0]
+            ){
+               /*console.log("Se encontró ");
+               console.log(dato.observacion);*/
+               observacionesTxt = dato.observacion;
+            }
+            //console.log(normalize(dato.nombre).split(" ")[0]+'=='+normalize(nombres).split(" ")[0] +'&&'+ normalize(dato.apellidoPaterno) +'=='+ normalize(apellidoPaterno) +'&&'+ normalize(dato.apellidoMaterno) +'=='+ normalize(apellidoMaterno));
+            //console.log(normalize(dato.nombre).split(" ")[0] == normalize(nombres).split(" ")[0] && normalize(dato.apellidoPaterno) == normalize(apellidoPaterno) && normalize(dato.apellidoMaterno) == normalize(apellidoMaterno));
+            
+         });
+      }
+     //observacionesTxt = mostrarObservacionAlumno(alumno.nombres,alumno.apellidoPaterno,alumno.apellidoMaterno);
+     /*console.log("Observacion obtenida");
+     console.log(observacionesTxt);*/
+     if(porCorreo==true){
+         htmlEjemplo = [];
+         htmlEjemplo = {
+            nombreAlumno : `${alumno.nombres.split(" ")[0]} ${alumno.apellidoPaterno} ${alumno.apellidoMaterno}`,
+            curso : alumno.curso,
+            lenguaje : cualificarPromedio(promedioLenguaje),
+            matematica : cualificarPromedio(promedioMatematicas),
+            cienciasNaturales : cualificarPromedio(promedioCienciasNaturales),
+            estudiosSociales : cualificarPromedio(promedioEstudiosSociales),
+            ingles : null,
+            taller1Titulo : null,
+            taller1Nota : null,
+            taller2Titulo: null,
+            taller2Nota: null,
+            promedioGeneral : null,
+            observaciones : observacionesTxt,
+            profesorJefe : nombreProfesorJefe.toUpperCase()
+         };
+      
+            if(cursoSeleccionado!='3NBA'){
+               htmlEjemplo.ingles = cualificarPromedio(promedioIngles);
+            }
+            htmlEjemplo.taller1Titulo = nombreTalleres[0].nombre.toUpperCase();
+            htmlEjemplo.taller1Nota = cualificarPromedio(promedioTaller1);
+            if(cursoSeleccionado!='3NBA'){
+               htmlEjemplo.taller2Titulo = nombreTalleres[1].nombre.toUpperCase();
+               htmlEjemplo.taller2Nota = cualificarPromedio(promedioTaller2);
+            }
+            htmlEjemplo.promedioGeneral = promedioGeneral;
+     }else{
+      htmlEjemplo = `
+               <div id='dom-to-print' class="cuerpo">
+                     <div class="tituloInforme" style="font-weight: bold !important;font-size: 30px!important;">
+                     <img class="fotoTitulo" src="${'http://drive.google.com/uc?export=view&id=1pE5jGKZ-i59Ydb0DWHngO6Ht6NG2KFZI'}">
+                     <div style="padding-top: 60px;">INFORME PEDAGÓGICO</div>
+                     <br>
+                     <div style="margin-top: -35px;">PRIMER SEMESTRE 2022</div>
+                     </div>
+                     <div class="fila">
+                     <div class="contenedorTitulo alturaContenedores titulosPequenos">NOMBRE</div>
+                     <div class="respuesta alturaContenedores respuestasGrandes">${alumno.nombres} ${alumno.apellidoPaterno} ${alumno.apellidoMaterno}</div>
+                     </div>
+                     <div class="fila">
+                     <div class="contenedorTitulo alturaContenedores titulosPequenos">CURSO</div>
+                     <div class="respuesta alturaContenedores respuestasGrandes">${alumno.curso}</div>
+                     </div>
+                     <div class="fila">
+                     <div class="contenedorTituloUnidadIzquierdo alturaContenedores titulosMasGrandes">ASIGNATURA</div>
+                     <div class="contenedorTituloUnidadDerecho alturaContenedores respuestasPequenas">PROMEDIO</div>
+					 <div class="contenedorTituloUnidadDerecho alturaContenedores respuestasPequenas" style="margin-left: 15px;">LOGRO</div>
+                     </div>
+                     <div class="fila">
+                     <div class="contenedorTitulo alturaContenedores titulosMasGrandes">LENGUA CASTELLANA Y COMUNICACIÓN</div>
+                     <div class="respuesta alturaContenedores respuestasPequenas">${alumno.promedioLenguaje}</div>
+					 <div class="respuesta alturaContenedores respuestasPequenas" style="margin-left: 15px;">${alumno.conceptoLenguaje}</div>
+                     </div>
+                     <div class="fila">
+                     <div class="contenedorTitulo alturaContenedores titulosMasGrandes">EDUCACIÓN MATEMÁTICA</div>
+                     <div class="respuesta alturaContenedores respuestasPequenas">${alumno.promedioMatematica}</div>
+					 <div class="respuesta alturaContenedores respuestasPequenas" style="margin-left: 15px;">${alumno.conceptoMatematica}</div>
+                     </div>
+                     <div class="fila">
+                     <div class="contenedorTitulo alturaContenedores titulosMasGrandes">CIENCIAS NATURALES</div>
+                     <div class="respuesta alturaContenedores respuestasPequenas">${alumno.promedioCNaturales}</div>
+					 <div class="respuesta alturaContenedores respuestasPequenas" style="margin-left: 15px;">${alumno.conceptoCNaturales}</div>
+                     </div>
+                     <div class="fila">
+                     <div class="contenedorTitulo alturaContenedores titulosMasGrandes">ESTUDIOS SOCIALES</div>
+                     <div class="respuesta alturaContenedores respuestasPequenas">${alumno.promedioESociales}</div>
+					 <div class="respuesta alturaContenedores respuestasPequenas" style="margin-left: 15px;">${alumno.conceptoESociales}</div>
+                     </div>`;
+                  if(cursoSeleccionado!='3NBA'){
+                     htmlEjemplo +=`<div class="fila">
+                                       <div class="contenedorTitulo alturaContenedores titulosMasGrandes">IDIOMA EXTRANJERO INGLÉS</div>
+                                       <div class="respuesta alturaContenedores respuestasPequenas">${alumno.promedioIngles}</div>
+									   <div class="respuesta alturaContenedores respuestasPequenas" style="margin-left: 15px;">${alumno.conceptoIngles}</div>
+                                    </div>`;
+                  }
+                  
+                  htmlEjemplo +=`<div class="fila">
+                                    <div class="contenedorTitulo alturaContenedores titulosMasGrandes">${nombreTalleres[0].nombre.toUpperCase()}</div>
+                                    <div class="respuesta alturaContenedores respuestasPequenas">${alumno.promedioTallerUno}</div>
+									<div class="respuesta alturaContenedores respuestasPequenas" style="margin-left: 15px;">${alumno.conceptoTallerUno}</div>
+                                 </div>`;
+                  if(cursoSeleccionado!='3NBA'){
+                     htmlEjemplo +=`<div class="fila">
+                                       <div class="contenedorTitulo alturaContenedores titulosMasGrandes">${nombreTalleres[1].nombre.toUpperCase()}</div>
+                                       <div class="respuesta alturaContenedores respuestasPequenas">${alumno.promedioTallerDos}</div>
+									   <div class="respuesta alturaContenedores respuestasPequenas" style="margin-left: 15px;">${alumno.conceptoTallerDos}</div>
+                                    </div>`;
+                  }
+                  
+                  
+                  htmlEjemplo += `<div class="fila">
+                                    <div class="contenedorTituloUnidadIzquierdo alturaContenedores titulosMasGrandes">PROMEDIO GENERAL</div>
+                                    <div class="respuesta alturaContenedores respuestasPequenas"  style="width: 32.5%;">${alumno.promedioFinal}</div>
+                                 </div>`;
+                  
+				                   
+                  htmlEjemplo += `
+                                 <div class="fila">
+                                    <div class="contenedorTituloUnidadIzquierdo alturaContenedores titulosMasGrandes">OBSERVACIÓN</div>
+                                    <div class="contenedorTituloUnidadDerecho alturaContenedores respuestasPequenas" style="
+                                          width: 25%;
+                                          margin-left: 5%;
+                                          font-size: 17px;
+                                       ">CONCEPTO</div>
+                                 </div>
+                                 <div class="fila" style="height: 130px !important;">
+                                    <div class="respuesta alturaContenedores titulosMasGrandes" style="height: 130px !important;text-align: justify !important;margin-right: 15px;line-height: 18px;"><div style="padding-right: 10px;">${observacionesTxt.toUpperCase()}</div></div>
+                                    <div class="respuesta alturaContenedores respuestasPequenas" style="
+                                          height: 130px !important;
+                                          background-color: #8064a2 !important;
+                                          border: #9f98a8 3px solid !important;
+                                          color: #f4f4f4;
+                                          text-align: center;
+                                          font-weight: bold;
+                                          width: 25%;
+                                          margin-left: 5%;
+                                          font-size: 19px;
+                                       ">(6,0-7,0) EXCELENTE<br>(5,0-5,9) AVANZADO<br>(4,0 – 4,9) MEDIO<br>(2,0 -3,9) BAJO
+                                    </div>
+                                 </div>
+                                 <div class="fila" style="margin-top: 100px !important; font-size: 15px;font-weight: bold;">
+                                    <div class="firmaDocente" style="text-align: center;left: 10%;margin-left: 40%;">`;
+						if(nombreProfesorJefe.toUpperCase()=="DANNY OLIVARES BERRIOS"){
+						  htmlEjemplo += `<img src="${'http://drive.google.com/uc?export=view&id=1p4aJZ02ZwWJNmbIHm5bmBQFcsFAQhnai'}" style="width: 200px;">`;
+					    }else if(nombreProfesorJefe.toUpperCase()=="IVÁN PIZARRO ALCAYAGA"){
+						  htmlEjemplo += `<img src="${'http://drive.google.com/uc?export=view&id=1-ymUTaSNnb0vjoAP6Pw63yLl2gsVYc8Y'}" style="width: 200px;">`;
+						}else if(nombreProfesorJefe.toUpperCase()=="FELIPE DIAZ BONILLA"){
+						  htmlEjemplo += `<img src="${'http://drive.google.com/uc?export=view&id=12KVifJ6nEZ0Nc7eIw6CGHOcqzfgZ3Lvj'}" style="width: 200px;">`;
+						}else if(nombreProfesorJefe.toUpperCase()=="CARLOS SARRIA GUERRERO"){
+						  htmlEjemplo += `<img src="${'http://drive.google.com/uc?export=view&id=1Kas_Us3EJ-Wvpj5uHISyk8xo3Piw95s2'}" style="width: 200px;">`;
+						}else if(nombreProfesorJefe.toUpperCase()=="ALEJANDRO OSORIO GUTIERREZ"){
+						  htmlEjemplo += `<img src="${'http://drive.google.com/uc?export=view&id=15kS15OM-klDq8zBQexUkA0bwbbgYAGE5'}" style="height: 150px;">`;
+						}else if(nombreProfesorJefe.toUpperCase()=="KARINA ARACENA MARIN"){
+						  htmlEjemplo += `<img src="${'http://drive.google.com/uc?export=view&id=147qbgdLXKuYQ36MQZJp3v8wOOjCMbpwJ'}" style="height: 150px;">`;
+						}
+                        htmlEjemplo += `<hr>
+                                       ${nombreProfesorJefe.toUpperCase()}
+                                       <br>PROFESOR JEFE
+                                    </div>
+                                   
+                           </div>
+                        </div>`;
+     }
+/*
+ <div class="firmaDirectora" style="text-align: center;margin-left: 15%;">
+                                       <hr>
+                                       MERCEDES TERESA VELASQUEZ SEGUEL
+                                       <br>DIRECTORA
+                                    </div>
+*/
+     
+    return htmlEjemplo;
+  }
+  function generarPdf(alumno){
+    let html = generarTablaHtmlInformePersona(alumno);
+    document.querySelector("#zonaImpresion").innerHTML = html;
+  }
+  
+  $(document).ready(function(){
+   
+   $('#BTNPDF').click(()=>{
+      
+     
+      // Document of 210mm wide and 297mm high
+      //Constructor de la clase jsPDF(orientation, unit, format) 
+      /*
+      orientation One of "portrait" or "landscape" (or shortcuts "p" (Default), "l")
+      unit Measurement unit to be used when coordinates are specified. One of "pt" (points), "mm" (Default), "cm", "in"
+      format One of 'a3', 'a4' (Default),'a5' ,'letter' ,'legal'
+      */ 
+      const pdf = new jsPDF('p', 'mm', [297, 210],true); // For A4 Sheet layout
+      pdf.internal.scaleFactor = 2.25;
+      pdf.addHTML(document.querySelector("#zonaImpresion"), 7, 17, {//el primer numero (7) significa 7px margin-left y el otro 17 signifina 17px margin-top
+         scale: 1,
+         retina: false,
+         pagesplit: false,
+         margin: {
+            top: 7,
+            right: 5,
+            bottom: 5,
+            left: 5,
+            useFor: 'page' // This property is mandatory to keep the margin to supsequent pages
+         }
+      }, function() {
+         pdf.save('test.pdf');
+      });
+      //document.querySelector("#zonaImpresion").innerHTML = '';
+      })
+  });
+  $.extend( true, $.fn.dataTable.defaults, {
+    "language": {
+        "decimal": ",",
+        "thousands": ".",
+        "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "infoPostFix": "",
+        "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+        "loadingRecords": "Cargando...",
+        "lengthMenu": "Mostrar _MENU_ registros",
+        "paginate": {
+            "first": "Primero",
+            "last": "Último",
+            "next": "Siguiente",
+            "previous": "Anterior"
+        },
+        "processing": "Procesando...",
+        "search": "Buscar:",
+        "searchPlaceholder": "Término de búsqueda",
+        "zeroRecords": "No se encontraron resultados",
+        "emptyTable": "Ningún dato disponible en esta tabla",
+        "aria": {
+            "sortAscending":  ": Activar para ordenar la columna de manera ascendente",
+            "sortDescending": ": Activar para ordenar la columna de manera descendente"
+        },
+        //only works for built-in buttons, not for custom buttons
+        "buttons": {
+            "create": "Nuevo",
+            "edit": "Cambiar",
+            "remove": "Borrar",
+            "copy": "Copiar",
+            "csv": "fichero CSV",
+            "excel": "tabla Excel",
+            "pdf": "documento PDF",
+            "print": "Imprimir",
+            "colvis": "Visibilidad columnas",
+            "collection": "Colección",
+            "upload": "Seleccione fichero...."
+        },
+        "select": {
+            "rows": {
+                _: '%d filas seleccionadas',
+                0: 'clic fila para seleccionar',
+                1: 'una fila seleccionada'
+            }
+        }
+    }           
+} );         
+</script>

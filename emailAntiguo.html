@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <base target="_top">
+  <title>A Simple Responsive HTML Email</title>
+  <style type="text/css">
+  body {margin: 0; padding: 0; min-width: 100%!important;}
+  img {height: auto;}
+  .content {width: 100%; max-width: 600px;}
+  .header {padding: 40px 30px 20px 30px;}
+  .innerpadding {padding: 30px 30px 30px 30px;}
+  .borderbottom {border-bottom: 1px solid #f2eeed;}
+  .subhead {font-size: 15px; color: #ffffff; font-family: sans-serif; letter-spacing: 10px;}
+  .h1, .h2, .bodycopy {color: #153643; font-family: sans-serif;}
+  .h1 {font-size: 33px; line-height: 38px; font-weight: bold;}
+  .h2 {padding: 0 0 15px 0; font-size: 24px; line-height: 28px; font-weight: bold;}
+  .bodycopy {font-size: 16px; line-height: 22px;}
+  .button {text-align: center; font-size: 18px; font-family: sans-serif; font-weight: bold; padding: 0 30px 0 30px;}
+  .button a {color: #ffffff; text-decoration: none;}
+  .footer {padding: 20px 30px 15px 30px;}
+  .footercopy {font-family: sans-serif; font-size: 14px; color: #ffffff;}
+  .footercopy a {color: #ffffff; text-decoration: underline;}
+
+  @media only screen and (max-width: 550px), screen and (max-device-width: 550px) {
+  body[yahoo] .hide {display: none!important;}
+  body[yahoo] .buttonwrapper {background-color: transparent!important;}
+  body[yahoo] .button {padding: 0px!important;}
+  body[yahoo] .button a {background-color: #e05443; padding: 15px 15px 13px!important;}
+  body[yahoo] .unsubscribe {display: block; margin-top: 20px; padding: 10px 50px; background: #2f3942; border-radius: 5px; text-decoration: none!important; font-weight: bold;}
+  }
+  
+  /*@media only screen and (min-device-width: 601px) {
+    .content {width: 600px !important;}
+    .col425 {width: 425px!important;}
+    .col380 {width: 380px!important;}
+    }*/
+
+  </style>
+  <style>
+                                 
+    .fila{
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    margin: 10px;
+    margin-top: 20px;
+    }
+    .alturaContenedores{
+    height: 30px;
+    padding-top: 5px;
+    padding-left: 10px;
+    }
+    
+    .contenedorTitulo{
+    background-color: #8064a2;
+    border-color: inherit;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: left;
+    vertical-align: top;
+    margin-right: 15px;
+    border: #9f98a8 3px solid;
+    }
+    .respuesta{
+    background-color: #eeece1;
+    border-color: inherit;
+    text-align: left;
+    vertical-align: top;
+    border: #8064a2 3px solid;
+    }
+    .contenedorTituloUnidadIzquierdo{
+    background-color: #403152;
+    border-color: inherit;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: top;
+    border: #9f98a8 3px solid;
+    margin-right: 15px;
+    }
+    .contenedorTituloUnidadDerecho{
+    background-color: #403152;
+    border-color: inherit;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: top;
+    border: #9f98a8 3px solid;
+    }
+    .cuerpo{
+    background-color: #ffffff;
+    font-size: 15px;
+    }
+    .titulosMasGrandes{
+    width: 60%;
+    }
+    .respuestasPequenas{
+    width: 30%;
+    }
+    .titulosPequenos{
+    width: 30%;
+    }
+    .respuestasGrandes{
+    width: 60%;
+    }
+    .tituloInforme{
+    align-items: center;
+    text-align: center;
+    color: #403152;
+    height: 160px;
+    }
+    .fotoTitulo{
+       height: 180px;
+       
+       left: 10px;
+       position: absolute;
+       margin-top: 0px;
+       font-weight: bold !important;
+    }
+    .tituloValorEscala{
+        width: 20%!important;
+        margin-left: 5%!important;
+        font-size: 12px!important;
+    }
+    .detalleEscalaGrado{
+        height: 100px !important;
+        background-color: #8064a2 !important;
+        border: #9f98a8 3px solid !important;
+        color: #f4f4f4;
+        text-align: center;
+        font-weight: bold;
+        width: 20%;
+        margin-left: 5%;
+        font-size: 10px;
+    }
+    .cajaObservaciones{
+        height: 100px !important;
+        text-align: justify !important;
+        margin-right: 15px;
+    }
+    @media (max-width: 480px) {
+        .cuerpo{
+            font-size: 12px;
+        }
+        .tituloValorEscala{
+            font-size: 9px;
+        }
+        .detalleEscalaGrado{
+            font-size: 7px;
+        }
+    }
+ </style>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body yahoo bgcolor="#f6f8f1">
+<table width="100%" bgcolor="#f6f8f1" border="0" cellpadding="0" cellspacing="0">
+<tr>
+  <td>
+    <!--[if (gte mso 9)|(IE)]>
+      <table width="600" align="center" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+    <![endif]-->     
+    <table bgcolor="#ffffff" class="content" align="center" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td style="background-color: rgba(90,49,114,1);" class="header">
+          <table width="70" align="left" border="0" cellpadding="0" cellspacing="0">  
+            <tr>
+              <td height="70" style="padding: 0 20px 20px 0;">
+                <img class="fix" src="http://drive.google.com/uc?export=view&id=1vz2pDdDSXmKfChgfICRtW1TRGYNx7vxH" width="70" height="70" border="0" alt="" />
+              </td>
+            </tr>
+          </table>
+          <!--[if (gte mso 9)|(IE)]>
+            <table width="425" align="left" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td>
+          <![endif]-->
+          <table class="col425" align="left" border="0" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 425px;">  
+            <tr>
+              <td height="70">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td class="subhead" style="padding: 0 0 0 3px;">
+                        INFORME PEDAGÓGICO
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="h1" style="padding: 5px 0 0 0;color:#ffffff !important;">
+                        PRIMER SEMESTRE 2020
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <!--[if (gte mso 9)|(IE)]>
+                </td>
+              </tr>
+          </table>
+          <![endif]-->
+        </td>
+      </tr>
+      <tr>
+        <td class="innerpadding borderbottom">
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td class="h2">
+                <?= getAlumnoActual().mensaje ?>
+              </td>
+            </tr>
+            <tr>
+              <td class="bodycopy">
+                <div id="dom-to-print" class="cuerpo">
+                    <div class="fila">
+                    <div class="contenedorTitulo alturaContenedores titulosPequenos">NOMBRE</div>
+                    <div class="respuesta alturaContenedores respuestasGrandes"><?= getAlumnoActual().tbody.nombreAlumno ?></div>
+                    </div>
+                    <div class="fila">
+                    <div class="contenedorTitulo alturaContenedores titulosPequenos">CURSO</div>
+                    <div class="respuesta alturaContenedores respuestasGrandes"><?= getAlumnoActual().tbody.curso ?></div>
+                    </div>
+                    <div class="fila">
+                    <div class="contenedorTituloUnidadIzquierdo alturaContenedores titulosMasGrandes">ASIGNATURA</div>
+                    <div class="contenedorTituloUnidadDerecho alturaContenedores respuestasPequenas">ESCALA DE GRADO</div>
+                    </div>
+                    <div class="fila">
+                    <div class="contenedorTitulo alturaContenedores titulosMasGrandes">LENGUAJE</div>
+                    <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.lenguaje ?></div>
+                    </div>
+                    <div class="fila">
+                    <div class="contenedorTitulo alturaContenedores titulosMasGrandes">MATEMÁTICA</div>
+                    <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.matematica ?></div>
+                    </div>
+                    <div class="fila">
+                    <div class="contenedorTitulo alturaContenedores titulosMasGrandes">CIENCIAS NATURALES</div>
+                    <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.cienciasNaturales ?></div>
+                    </div>
+                    <div class="fila">
+                    <div class="contenedorTitulo alturaContenedores titulosMasGrandes">ESTUDIOS SOCIALES</div>
+                    <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.estudiosSociales ?></div>
+                    </div>
+                    <? if(getAlumnoActual().tbody.curso!='3NBA'){ ?>
+                        <div class="fila">
+                            <div class="contenedorTitulo alturaContenedores titulosMasGrandes">INGLÉS</div>
+                            <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.ingles ?></div>
+                        </div>
+                    <? } ?>
+
+                    <? if(getAlumnoActual().tbody.curso=='3NBA'){ ?>
+                        <div class="fila">
+                            <div class="contenedorTitulo alturaContenedores titulosMasGrandes"><?= getAlumnoActual().tbody.taller1Titulo ?></div>
+                            <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.taller1Nota ?></div>
+                        </div>
+                    <? }else{ ?>
+                        <div class="fila">
+                            <div class="contenedorTitulo alturaContenedores titulosMasGrandes"><?= getAlumnoActual().tbody.taller1Titulo ?></div>
+                            <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.taller1Nota ?></div>
+                        </div>
+                        <div class="fila">
+                            <div class="contenedorTitulo alturaContenedores titulosMasGrandes"><?= getAlumnoActual().tbody.taller2Titulo ?></div>
+                            <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.taller2Nota ?></div>
+                        </div>
+                    <? } ?>
+                    <div class="fila">
+                        <div class="contenedorTituloUnidadIzquierdo alturaContenedores titulosMasGrandes">PROMEDIO GENERAL</div>
+                        <div class="respuesta alturaContenedores respuestasPequenas"><?= getAlumnoActual().tbody.promedioGeneral ?></div>
+                    </div>
+                    <div class="fila">
+                        <div class="contenedorTituloUnidadIzquierdo alturaContenedores titulosMasGrandes">OBSERVACIÓN</div>
+                        <div class="contenedorTituloUnidadDerecho alturaContenedores respuestasPequenas tituloValorEscala">VALOR ESCALA</div>
+                    </div>
+                    <div class="fila" style="height: 100px !important;">
+                        <div class="respuesta alturaContenedores titulosMasGrandes cajaObservaciones"><?= getAlumnoActual().tbody.observaciones ?></div>
+                        <div class="respuesta alturaContenedores respuestasPequenas detalleEscalaGrado">(6,0-7,0) EXCELENTE<br>(5,0-5,9) AVANZADO<br>(4,0 – 4,9) MEDIO<br>(2,0 -3,9) BAJO
+                        </div>
+                    </div>
+                    <div class="fila" style="margin-top: 100px !important; font-size: 10px;font-weight: bold;">
+                        <div class="firmaDocente" style="text-align: center;left: 10%;margin-left: 6%;">
+                            <hr>
+                            <?= getAlumnoActual().tbody.profesorJefe ?>
+                            <br>PROFESOR JEFE
+                        </div>
+                        <div class="firmaDirectora" style="text-align: center;margin-left: 15%;">
+                            <hr>
+                            MERCEDES TERESA VELASQUEZ SEGUEL
+                            <br>DIRECTORA
+                        </div>
+                </div>
+            </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td class="innerpadding borderbottom">
+          <img class="fix" src="http://drive.google.com/uc?export=view&id=1AobHYfIGVskWwpMgAcyBKbIqkCa2xKRD" width="100%" border="0" alt="" />
+        </td>
+      </tr>
+      <tr>
+        <td class="innerpadding bodycopy">
+          <!--Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tempus adipiscing felis, sit amet blandit ipsum volutpat sed. Morbi porttitor, eget accumsan dictum, nisi libero ultricies ipsum, in posuere mauris neque at erat.-->
+        </td>
+      </tr>
+      <tr>
+        <td class="footer" style="background-color: rgba(90,49,114,1);">
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td align="center" class="footercopy">
+                &reg; Instituto de Tierras Blancas<br/>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding: 20px 0 0 0;">
+                <table border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td width="37" style="text-align: center; padding: 0 10px 0 10px;">
+                      <a href="https://www.facebook.com/InstitutoTierrasBlancas">
+                        <img src="http://drive.google.com/uc?export=view&id=1OH4D3hPJeO8nqJqCCVsyzjcjb4vb5FYD" width="37" height="37" alt="Facebook" border="0" />
+                      </a>
+                    </td>
+                    <td width="37" style="text-align: center; padding: 0 10px 0 10px;">
+                      <a href="https://www.instagram.com/institutotierrasblancas/">
+                        <img src="http://drive.google.com/uc?export=view&id=1iM7AKYyyk3Rtdm_ivqGSJXtbAHrN-qfx" width="37" height="37" alt="Twitter" border="0" />
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <!--[if (gte mso 9)|(IE)]>
+          </td>
+        </tr>
+    </table>
+    <![endif]-->
+    </td>
+  </tr>
+</table>
+
+<!--analytics-->
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="http://tutsplus.github.io/github-analytics/ga-tracking.min.js"></script>
+</body>
+</html>
